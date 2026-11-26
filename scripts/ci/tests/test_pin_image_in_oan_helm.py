@@ -98,10 +98,11 @@ class Retry(unittest.TestCase):
 
 
 class Promote(unittest.TestCase):
-    """The staging form: New Dev's image moves to staging only when staging holds the code it was built from."""
+    """Staging form: New Dev's image moves only if staging holds the code it was built from."""
 
     DEV = VALUES.replace(
-        "tag: 1.0.0-develop.1   # pinned", f"tag: 1.0.0-develop.5@{DIGEST}  # built from 0123456789ab"
+        "tag: 1.0.0-develop.1   # pinned",
+        f"tag: 1.0.0-develop.5@{DIGEST}  # built from 0123456789ab",
     )
     HEAD = "f" * 40
 
@@ -147,7 +148,9 @@ class Promote(unittest.TestCase):
         self.assertEqual((code, written), (0, []))
 
     def test_the_comment_replaces_the_old_one_only_when_given(self):
-        out = pin.set_value(VALUES, pin.PATHS["ui"], f"1.0.0-develop.2@{DIGEST}", "built from abcdefabcdef")
+        out = pin.set_value(
+            VALUES, pin.PATHS["ui"], f"1.0.0-develop.2@{DIGEST}", "built from abcdefabcdef"
+        )
         self.assertIn(f"tag: 1.0.0-develop.2@{DIGEST}  # built from abcdefabcdef\n", out)
         self.assertEqual(pin.get_comment(out, pin.PATHS["ui"]), "built from abcdefabcdef")
 
